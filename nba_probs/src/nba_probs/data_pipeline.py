@@ -6,10 +6,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterable, List, Optional
 
-import pandas as pd
-from nba_api.stats.endpoints import playbyplayv3
-from tqdm import tqdm
-
 from .config import get_settings
 
 
@@ -33,8 +29,11 @@ class GameMinute:
         return self.home_team_score - self.away_team_score
 
 
-def fetch_play_by_play(game_id: str) -> pd.DataFrame:
+def fetch_play_by_play(game_id: str):
     """Fetch raw play-by-play data for a given NBA game ID."""
+
+    from nba_api.stats.endpoints import playbyplayv3  # type: ignore import-not-found
+    import pandas as pd  # type: ignore import-not-found
 
     settings = get_settings()
     headers = {}
@@ -48,8 +47,10 @@ def fetch_play_by_play(game_id: str) -> pd.DataFrame:
     return plays
 
 
-def summarize_game_by_minute(plays: pd.DataFrame) -> pd.DataFrame:
+def summarize_game_by_minute(plays):
     """Convert raw play-by-play events into one-minute summaries."""
+
+    import pandas as pd  # type: ignore import-not-found
 
     if plays.empty:
         raise ValueError("Expected play-by-play events, received empty DataFrame")
@@ -99,8 +100,12 @@ def summarize_game_by_minute(plays: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def batch_fetch(game_ids: Iterable[str], show_progress: bool = True) -> pd.DataFrame:
+def batch_fetch(game_ids: Iterable[str], show_progress: bool = True):
     """Download and summarize multiple games."""
+
+    import pandas as pd  # type: ignore import-not-found
+
+    from tqdm import tqdm  # type: ignore import-not-found
 
     records: List[pd.DataFrame] = []
     iterator: Iterable[str] = tqdm(game_ids, desc="Downloading games") if show_progress else game_ids

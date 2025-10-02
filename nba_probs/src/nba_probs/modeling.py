@@ -7,8 +7,8 @@ from pathlib import Path
 from typing import Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover - imported for type checking only
-    import pandas as pd  # type: ignore import-not-found  # noqa: F401
-    from sklearn.linear_model import LogisticRegression  # type: ignore import-not-found
+    import pandas as pd  # type: ignore[import-not-found]  # noqa: F401
+    from sklearn.linear_model import LogisticRegression  # type: ignore[import-not-found]
 
 from .config import get_settings
 
@@ -25,7 +25,7 @@ class ModelArtifacts:
     test_rows: int
 
     def save(self, path: Path) -> None:
-        import joblib  # type: ignore import-not-found
+        import joblib  # type: ignore[import-not-found]
 
         path.parent.mkdir(parents=True, exist_ok=True)
         joblib.dump({
@@ -49,9 +49,9 @@ def train_baseline_model(
 ) -> ModelArtifacts:
     """Train a baseline logistic regression model on the provided dataset."""
 
-    from sklearn.linear_model import LogisticRegression  # type: ignore import-not-found
-    from sklearn.metrics import brier_score_loss, roc_auc_score  # type: ignore import-not-found
-    from sklearn.model_selection import train_test_split  # type: ignore import-not-found
+    from sklearn.linear_model import LogisticRegression  # type: ignore[import-not-found]
+    from sklearn.metrics import brier_score_loss, roc_auc_score  # type: ignore[import-not-found]
+    from sklearn.model_selection import train_test_split  # type: ignore[import-not-found]
 
     missing_columns = {col for col in (*FEATURES, TARGET) if col not in data.columns}
     if missing_columns:
@@ -62,7 +62,7 @@ def train_baseline_model(
         message = "No rows available for training after dropping missing values."
         raise ValueError(message)
 
-    X = df.loc[:, FEATURES]
+    X = df.loc[:, list(FEATURES)]
     y = df.loc[:, TARGET]
 
     X_train, X_test, y_train, y_test = train_test_split(
@@ -94,7 +94,7 @@ def predict_win_probability(
 ) -> float:
     """Return the probability of the home team winning."""
 
-    import numpy as np  # type: ignore import-not-found
+    import numpy as np  # type: ignore[import-not-found]
 
     X = np.array([[score_margin, seconds_remaining]])
     return float(model.predict_proba(X)[0, 1])
@@ -115,7 +115,7 @@ def save_model(
 def load_model(path: Path | None = None) -> ModelArtifacts:
     """Load model artifacts from disk."""
 
-    import joblib  # type: ignore import-not-found
+    import joblib  # type: ignore[import-not-found]
 
     settings = get_settings()
     target_path = path or (settings.paths.models_dir / "baseline_model.joblib")

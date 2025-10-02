@@ -34,19 +34,4 @@ nba_probs/
    `docs/` directory as you explore data sources and refine your modeling
    approach.
 
-## Running tests
-
-Install the development dependencies and execute the test suite:
-
-```bash
-pip install -e .[dev]
-pytest
-```
-
-To run only the CLI-focused smoke tests:
-
-```bash
-pytest -m cli
-```
-
 Happy building!

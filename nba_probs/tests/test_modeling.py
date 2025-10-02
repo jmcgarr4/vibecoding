@@ -1,35 +1,19 @@
 import pytest
 
-try:
-    from sklearn.linear_model import LogisticRegression
-except ModuleNotFoundError:  # pragma: no cover - optional dependency guard
-    pytest.skip("scikit-learn is required for modeling tests", allow_module_level=True)
-
-from nba_probs.modeling import load_model, predict_win_probability, train_baseline_model
-
 np = pytest.importorskip("numpy")
 pd = pytest.importorskip("pandas")
+pytest.importorskip("sklearn")
 pytest.importorskip("joblib")
+
+from nba_probs.modeling import load_model, predict_win_probability, train_baseline_model
+from sklearn.linear_model import LogisticRegression
 
 
 def sample_training_data() -> pd.DataFrame:
     return pd.DataFrame(
         {
             "score_margin": [-12, -8, -3, 0, 2, 5, 9, 11, 7, -5, 4, -2],
-            "seconds_remaining": [
-                30,
-                120,
-                240,
-                360,
-                420,
-                480,
-                540,
-                600,
-                660,
-                720,
-                780,
-                840,
-            ],
+            "seconds_remaining": [30, 120, 240, 360, 420, 480, 540, 600, 660, 720, 780, 840],
             "home_win": [0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0],
         }
     )

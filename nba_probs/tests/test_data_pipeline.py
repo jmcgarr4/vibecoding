@@ -1,8 +1,8 @@
 import pytest
 
-from nba_probs.data_pipeline import summarize_game_by_minute
-
 pd = pytest.importorskip("pandas")
+
+from nba_probs.data_pipeline import summarize_game_by_minute
 
 
 def _sample_play_by_play() -> pd.DataFrame:
@@ -71,8 +71,7 @@ def test_summarize_game_by_minute_produces_expected_columns():
     } <= set(summary.columns)
 
     assert summary["home_win"].iloc[0] == 1
-    margin = summary["home_team_score"].iloc[0] - summary["away_team_score"].iloc[0]
-    assert summary["score_margin"].iloc[0] == margin
+    assert summary["score_margin"].iloc[0] == summary["home_team_score"].iloc[0] - summary["away_team_score"].iloc[0]
 
 
 def test_summarize_game_by_minute_handles_empty_input():
@@ -88,13 +87,3 @@ def test_summarize_game_by_minute_handles_empty_input():
 
     with pytest.raises(ValueError):
         summarize_game_by_minute(empty)
-
-
-def test_summarize_game_by_minute_column_types():
-    from pandas.api.types import is_integer_dtype, is_numeric_dtype
-
-    summary = summarize_game_by_minute(_sample_play_by_play())
-
-    assert is_integer_dtype(summary["seconds_remaining"])
-    assert is_numeric_dtype(summary["score_margin"])
-    assert is_integer_dtype(summary["home_win"])

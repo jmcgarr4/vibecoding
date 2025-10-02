@@ -32,8 +32,8 @@ class GameMinute:
 def fetch_play_by_play(game_id: str):
     """Fetch raw play-by-play data for a given NBA game ID."""
 
-    from nba_api.stats.endpoints import playbyplayv3  # type: ignore[import-not-found]
-    import pandas as pd  # type: ignore[import-not-found]
+    from nba_api.stats.endpoints import playbyplayv3  # type: ignore import-not-found
+    import pandas as pd  # type: ignore import-not-found
 
     settings = get_settings()
     headers = {}
@@ -50,7 +50,7 @@ def fetch_play_by_play(game_id: str):
 def summarize_game_by_minute(plays):
     """Convert raw play-by-play events into one-minute summaries."""
 
-    import pandas as pd  # type: ignore[import-not-found]
+    import pandas as pd  # type: ignore import-not-found
 
     if plays.empty:
         raise ValueError("Expected play-by-play events, received empty DataFrame")
@@ -76,32 +76,21 @@ def summarize_game_by_minute(plays):
             elapsed = game_clock - int(row["clock"].total_seconds())
             minute_index = elapsed // 60
 
-            seconds_remaining = row["clock"].total_seconds()
-            if period <= 4:
-                seconds_remaining += (4 - period) * 12 * 60
-
             minute = GameMinute(
                 game_id=row["gameId"],
                 minute_index=int(minute_index + (period - 1) * 12),
                 period=int(period),
-                seconds_remaining=int(seconds_remaining),
+                seconds_remaining=int(row["clock"].total_seconds() + (4 - period) * 12 * 60 if period <= 4 else row["clock"].total_seconds()),
                 home_team_score=home_score,
                 away_team_score=away_score,
                 home_team_id=int(row["homeTeamId"]),
                 away_team_id=int(row["visitorTeamId"]),
                 home_win=None,
-                game_date=(
-                    pd.to_datetime(row.get("gameDate"))
-                    if "gameDate" in row
-                    else None
-                ),
+                game_date=pd.to_datetime(row.get("gameDate")) if "gameDate" in row else None,
             )
             minutes.append(minute)
 
-    df = pd.DataFrame([m.__dict__ for m in minutes]).drop_duplicates(
-        subset=["game_id", "minute_index"],
-        keep="last",
-    )
+    df = pd.DataFrame([m.__dict__ for m in minutes]).drop_duplicates(subset=["game_id", "minute_index"], keep="last")
 
     last_row = plays.iloc[-1]
     home_win = int(last_row["homeScore"] > last_row["awayScore"])
@@ -114,16 +103,12 @@ def summarize_game_by_minute(plays):
 def batch_fetch(game_ids: Iterable[str], show_progress: bool = True):
     """Download and summarize multiple games."""
 
-    import pandas as pd  # type: ignore[import-not-found]
+    import pandas as pd  # type: ignore import-not-found
 
-    from tqdm import tqdm  # type: ignore[import-not-found]
+    from tqdm import tqdm  # type: ignore import-not-found
 
     records: List[pd.DataFrame] = []
-    iterator: Iterable[str]
-    if show_progress:
-        iterator = tqdm(game_ids, desc="Downloading games")
-    else:
-        iterator = game_ids
+    iterator: Iterable[str] = tqdm(game_ids, desc="Downloading games") if show_progress else game_ids
 
     for game_id in iterator:
         try:

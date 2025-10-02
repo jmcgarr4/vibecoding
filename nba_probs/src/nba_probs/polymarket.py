@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, List, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 import requests
 
@@ -57,22 +57,9 @@ class PolymarketClient:
 
     def _request(self, method: str, path: str, **kwargs: Any) -> Any:
         url = f"{POLYMARKET_BASE_URL}{path}"
-        try:
-            response = self.session.request(method, url, timeout=10, **kwargs)
-            response.raise_for_status()
-        except requests.Timeout as exc:  # pragma: no cover - network errors
-            raise RuntimeError("Polymarket request timed out") from exc
-        except requests.HTTPError as exc:  # pragma: no cover - depends on API
-            status = exc.response.status_code if exc.response is not None else "unknown"
-            message = f"Polymarket request failed with status {status}"
-            raise RuntimeError(message) from exc
-        except requests.RequestException as exc:  # pragma: no cover - network errors
-            raise RuntimeError("Polymarket request failed") from exc
-
-        try:
-            return response.json()
-        except ValueError as exc:
-            raise RuntimeError("Polymarket response was not valid JSON") from exc
+        response = self.session.request(method, url, timeout=10, **kwargs)
+        response.raise_for_status()
+        return response.json()
 
     def list_nba_markets(self) -> List[Market]:
         payload = self._request("GET", "/markets", params={"tag": "NBA"})

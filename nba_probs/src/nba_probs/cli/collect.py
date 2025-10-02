@@ -4,15 +4,16 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Iterable
+
+import pandas as pd
 
 from ..config import get_settings
 from ..data_pipeline import batch_fetch
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Download NBA games and summarize by minute",
-    )
+    parser = argparse.ArgumentParser(description="Download NBA games and summarize by minute")
     parser.add_argument("game_ids", nargs="+", help="NBA game IDs to download")
     parser.add_argument(
         "--output",

@@ -12,9 +12,7 @@ from ..polymarket import PolymarketClient
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Capture a Polymarket orderbook snapshot",
-    )
+    parser = argparse.ArgumentParser(description="Capture a Polymarket orderbook snapshot")
     parser.add_argument("market_id", help="Polymarket market identifier")
     parser.add_argument(
         "--output",
@@ -43,18 +41,13 @@ def main(args: argparse.Namespace | None = None) -> None:
     }
 
     if args.output is not None:
-        output_path = (
-            args.output
-            if args.output.is_absolute()
-            else settings.paths.polymarket_dir / args.output
-        )
-        output_path.parent.mkdir(parents=True, exist_ok=True)
+        args.output.parent.mkdir(parents=True, exist_ok=True)
         existing = []
-        if output_path.exists():
-            existing = json.loads(output_path.read_text())
+        if args.output.exists():
+            existing = json.loads(args.output.read_text())
         existing.append(payload)
-        output_path.write_text(json.dumps(existing, indent=2))
-        print(f"Snapshot appended to {output_path}")
+        args.output.write_text(json.dumps(existing, indent=2))
+        print(f"Snapshot appended to {args.output}")
     else:
         print(json.dumps(payload, indent=2))
 

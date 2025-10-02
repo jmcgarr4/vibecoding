@@ -1,0 +1,11 @@
+# Local Python caches
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+.venv/
+.env
+
+# Data artifacts
+/data/

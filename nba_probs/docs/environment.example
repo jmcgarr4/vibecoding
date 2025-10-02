@@ -1,0 +1,10 @@
+# Copy this file to `.env` and fill in the secrets required for external services.
+# The project uses `python-dotenv` semantics (KEY=VALUE lines).
+
+# Optional: Polymarket API credentials (required for authenticated endpoints).
+POLYMARKET_API_KEY=
+POLYMARKET_API_SECRET=
+
+# Optional: HTTP proxy settings if you are behind a corporate firewall.
+HTTP_PROXY=
+HTTPS_PROXY=

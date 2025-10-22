@@ -34,13 +34,24 @@ Polymarket Baby is a minimal Python script that polls the public [Polymarket](ht
 
 ## Running the script
 
-Execute the polling script with Python:
+Execute the script with Python:
 
 ```bash
 python main.py
 ```
 
-The script will:
+By default the program runs in **demo mode**, which prints formatted sample
+trades without contacting Polymarket. This avoids failures when running in
+restricted environments (such as sandboxes that cannot reach the public API)
+while still showcasing the output format.
+
+To connect to Polymarket for real, pass the `--live` flag:
+
+```bash
+python main.py --live
+```
+
+The live mode will:
 
 1. Fetch the most recent trade from `https://api.polymarket.com` every five minutes.
 2. Print the market question, the outcome selected, and the USD amount for the trade.
@@ -48,13 +59,15 @@ The script will:
 
 ### Expected output
 
-Output will look similar to:
+Demo output will look similar to:
 
 ```
 [2024-04-29 12:30:00] Market: Who will win the 2024 US Presidential Election? | Outcome: YES on Candidate A | Amount: $23.45
 ```
 
-Actual values depend on real-time Polymarket activity. If the script cannot reach the API it will log an error and retry after five minutes.
+When running in live mode, actual values depend on real-time Polymarket
+activity. If the script cannot reach the API it will log an error and retry
+after five minutes.
 
 ## Notes
 

@@ -1,17 +1,19 @@
 """Entrypoint script for the Polymarket Baby project.
 
-This module contains a small polling loop that calls the public
-Polymarket API every five minutes and prints information about the
-most recent trade. The script runs indefinitely until it is stopped
-manually.
+This module exposes helpers for polling the public Polymarket API and
+formatting trade payloads. A small command-line interface is included: it
+defaults to a network-free demo mode but can poll the real API when invoked
+with the ``--live`` flag.
 """
 
 from __future__ import annotations
 
+import argparse
 import datetime as dt
+import itertools
 import sys
 import time
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional, Sequence
 
 import requests
 
@@ -22,6 +24,30 @@ API_URL = "https://api.polymarket.com/trades"
 
 # Number of seconds to wait between API calls (5 minutes).
 POLL_INTERVAL_SECONDS = 300
+
+# Sample trades used when the script runs in "demo" mode. They provide a quick
+# way to preview the output format without making any network requests—useful
+# in restricted environments such as automated tests or sandboxes that cannot
+# reach Polymarket's servers.
+SAMPLE_TRADES = (
+    {
+        "market": "Will Bitcoin close above $75k on 2024-12-31?",
+        "outcome": "Yes",
+        "cost": 42.50,
+    },
+    {
+        "market": {
+            "question": "Who will win the 2024 US Presidential Election?",
+        },
+        "outcome": {"name": "Candidate A"},
+        "amount": "18.25",
+    },
+    {
+        "title": "Will a commercial mission land on the Moon this year?",
+        "side": "NO",
+        "value": 7.75,
+    },
+)
 
 
 def _extract_first(iterable: Iterable[Any]) -> Optional[Any]:
@@ -105,7 +131,7 @@ def fetch_latest_trade() -> Optional[Dict[str, Any]]:
     return _extract_first(trades)
 
 
-def main() -> None:
+def run_live_loop() -> None:
     """Continuously poll Polymarket and print information about trades."""
 
     print("Starting Polymarket Baby trade watcher. Press Ctrl+C to stop.")
@@ -124,6 +150,48 @@ def main() -> None:
 
         # Wait for the requested polling interval before fetching again.
         time.sleep(POLL_INTERVAL_SECONDS)
+
+
+def run_demo_loop(iterations: int = 3, sleep_seconds: int = 1) -> None:
+    """Emit formatted sample trades without contacting the Polymarket API."""
+
+    print(
+        "Running in demo mode. Use --live to poll Polymarket. "
+        "Press Ctrl+C to stop."
+    )
+    for idx, trade in zip(range(iterations), itertools.cycle(SAMPLE_TRADES)):
+        # ``format_trade`` already handles dictionaries and strings in the same
+        # way the live API would deliver them, so we can re-use it for the demo
+        # data.
+        print(format_trade(trade))
+        if idx < iterations - 1:
+            time.sleep(sleep_seconds)
+
+
+def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
+    """Return parsed command-line arguments for the script."""
+
+    parser = argparse.ArgumentParser(description="Poll the Polymarket API")
+    parser.add_argument(
+        "--live",
+        action="store_true",
+        help=(
+            "Fetch real trades from Polymarket. Without this flag the script "
+            "prints sample output only, which is safer in restricted "
+            "environments."
+        ),
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: Optional[Sequence[str]] = None) -> None:
+    """Entrypoint handling command-line arguments for the script."""
+
+    args = parse_args(argv)
+    if args.live:
+        run_live_loop()
+    else:
+        run_demo_loop()
 
 
 if __name__ == "__main__":

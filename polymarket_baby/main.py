@@ -20,10 +20,10 @@ import requests
 # Base endpoint serving recent trades. The API supports pagination via
 # query parameters such as ``limit``. We request a single trade because we
 # only care about the latest event.
-API_URL = "https://api.polymarket.com/trades"
+API_URL = "https://data-api.polymarket.com/trades"
 
 # Number of seconds to wait between API calls (5 minutes).
-POLL_INTERVAL_SECONDS = 300
+POLL_INTERVAL_SECONDS = 30
 
 # Sample trades used when the script runs in "demo" mode. They provide a quick
 # way to preview the output format without making any network requests—useful
@@ -104,16 +104,22 @@ def format_trade(trade: Dict[str, Any]) -> str:
     else:
         outcome_text = str(outcome) if outcome is not None else "Unknown outcome"
 
-    amount_usd = _safe_get(trade, "cost", "amount", "value", "priceUsd")
+    # Extract price and size
     try:
-        amount_number = float(amount_usd) if amount_usd is not None else 0.0
+        price = float(_safe_get(trade, "price") or 0)
+        size = float(_safe_get(trade, "size") or 0)
     except (TypeError, ValueError):
-        amount_number = 0.0
+        price = 0.0
+        size = 0.0
 
+    total_value = price * size
     timestamp = dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+
     return (
         f"[{timestamp}] Market: {market_question} | "
-        f"Outcome: {outcome_text} | Amount: ${amount_number:,.2f}"
+        f"Outcome: {outcome_text} | "
+        f"Shares: {size:,.2f} | Price: ${price:,.4f} | "
+        f"Total: ${total_value:,.2f}"
     )
 
 
@@ -128,7 +134,7 @@ def fetch_latest_trade() -> Optional[Dict[str, Any]]:
     response.raise_for_status()
     payload = response.json()
     trades = _coerce_trades(payload)
-    return _extract_first(trades)
+    return trades
 
 
 def run_live_loop() -> None:
@@ -143,10 +149,11 @@ def run_live_loop() -> None:
             # issue and continue looping so the script remains resilient.
             print(f"Error fetching trades: {exc}", file=sys.stderr)
         else:
-            if trade is None:
+            if not trade:
                 print("No trades returned by the API.")
             else:
-                print(format_trade(trade))
+                for t in trade:
+                    print(format_trade(t))
 
         # Wait for the requested polling interval before fetching again.
         time.sleep(POLL_INTERVAL_SECONDS)

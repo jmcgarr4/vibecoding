@@ -178,6 +178,8 @@ function newRound() {
 
   // Update UI
   $('landmark-name').textContent = currentLandmark.name;
+  $('challenge-image').src = currentLandmark.image;
+  $('challenge-image').alt = currentLandmark.name;
   $('round').textContent = roundNumber;
   $('score').textContent = totalScore;
 }

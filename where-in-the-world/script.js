@@ -9,70 +9,70 @@ const LANDMARKS = [
     location: 'Paris, France',
     lat: 48.8584,
     lng: 2.2945,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/320px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg',
+    image: 'https://images.unsplash.com/photo-Q0-fOL2nqZc?w=300&h=300&fit=crop&auto=format',
   },
   {
     name: 'Great Pyramid of Giza',
     location: 'Giza, Egypt',
     lat: 29.9792,
     lng: 31.1342,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Kheops-Pyramid.jpg/320px-Kheops-Pyramid.jpg',
+    image: 'https://images.unsplash.com/photo-F9HMih_ilFY?w=300&h=300&fit=crop&auto=format',
   },
   {
     name: 'Statue of Liberty',
     location: 'New York, USA',
     lat: 40.6892,
     lng: -74.0445,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/320px-Statue_of_Liberty_7.jpg',
+    image: 'https://images.unsplash.com/photo-UGi_Ng56FRI?w=300&h=300&fit=crop&auto=format',
   },
   {
     name: 'Taj Mahal',
     location: 'Agra, India',
     lat: 27.1751,
     lng: 78.0421,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Taj_Mahal_%28Edited%29.jpeg/320px-Taj_Mahal_%28Edited%29.jpeg',
+    image: 'https://images.unsplash.com/photo-e22GaIs1VuU?w=300&h=300&fit=crop&auto=format',
   },
   {
     name: 'Christ the Redeemer',
     location: 'Rio de Janeiro, Brazil',
     lat: -22.9519,
     lng: -43.2105,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Christ_the_Redeemer_-_Cristo_Redentor.jpg/320px-Christ_the_Redeemer_-_Cristo_Redentor.jpg',
+    image: 'https://images.unsplash.com/photo-OkiDIla7K8Q?w=300&h=300&fit=crop&auto=format',
   },
   {
     name: 'Sydney Opera House',
     location: 'Sydney, Australia',
     lat: -33.8568,
     lng: 151.2153,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Sydney_Australia._%2821339175489%29.jpg/320px-Sydney_Australia._%2821339175489%29.jpg',
+    image: 'https://images.unsplash.com/photo-7Zb7kUyQg1E?w=300&h=300&fit=crop&auto=format',
   },
   {
     name: 'Machu Picchu',
     location: 'Cusco Region, Peru',
     lat: -13.1631,
     lng: -72.5450,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Machu_Picchu%2C_Peru.jpg/320px-Machu_Picchu%2C_Peru.jpg',
+    image: 'https://images.unsplash.com/photo-CAKGakBldi8?w=300&h=300&fit=crop&auto=format',
   },
   {
     name: 'Mount Fuji',
     location: 'Honshu, Japan',
     lat: 35.3606,
     lng: 138.7274,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/080103_hakkai_fuji.jpg/320px-080103_hakkai_fuji.jpg',
+    image: 'https://images.unsplash.com/photo-N4DbvTUDikw?w=300&h=300&fit=crop&auto=format',
   },
   {
     name: 'Colosseum',
     location: 'Rome, Italy',
     lat: 41.8902,
     lng: 12.4922,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/320px-Colosseo_2020.jpg',
+    image: 'https://images.unsplash.com/photo-XtWH3SxfK9U?w=300&h=300&fit=crop&auto=format',
   },
   {
     name: 'Big Ben',
     location: 'London, United Kingdom',
     lat: 51.5007,
     lng: -0.1246,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Clock_Tower_-_Palace_of_Westminster%2C_London_-_May_2007_icon.png/320px-Clock_Tower_-_Palace_of_Westminster%2C_London_-_May_2007_icon.png',
+    image: 'https://images.unsplash.com/photo-iXqTqC-f6jI?w=300&h=300&fit=crop&auto=format',
   },
 ];
 
@@ -144,11 +144,6 @@ function freshDeck() {
   return deck;
 }
 
-// ── Image proxy (bypasses Wikimedia cross-origin block on iOS Safari) ─────────
-function proxyImg(url) {
-  return 'https://wsrv.nl/?url=' + encodeURIComponent(url) + '&w=300&h=300&fit=cover';
-}
-
 // ── DOM helpers ───────────────────────────────────────────────────────────────
 function $(id) { return document.getElementById(id); }
 
@@ -183,7 +178,7 @@ function newRound() {
 
   // Update UI
   $('landmark-name').textContent = currentLandmark.name;
-  $('challenge-image').src = proxyImg(currentLandmark.image);
+  $('challenge-image').src = currentLandmark.image;
   $('challenge-image').alt = currentLandmark.name;
   $('round').textContent = roundNumber;
   $('score').textContent = totalScore;
@@ -229,7 +224,7 @@ map.on('click', (e) => {
   roundNumber++;
 
   // Populate result panel
-  $('landmark-image').src = proxyImg(lm.image);
+  $('landmark-image').src = lm.image;
   $('landmark-image').alt = lm.name;
   $('result-name').textContent = lm.name;
   $('result-location').textContent = `📍 ${lm.location}`;

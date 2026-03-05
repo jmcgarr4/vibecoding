@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Where in the World?</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+
+    <header>
+      <h1>🌍 Where in the World?</h1>
+      <div id="scoreboard">
+        <div class="score-pill">
+          <span class="score-label">Score</span>
+          <span class="score-value" id="score">0</span>
+        </div>
+        <div class="score-pill">
+          <span class="score-label">Round</span>
+          <span class="score-value" id="round">1</span>
+        </div>
+      </div>
+    </header>
+
+    <div id="challenge-bar">
+      <p class="challenge-label">Find this landmark on the map:</p>
+      <h2 id="landmark-name">Loading…</h2>
+    </div>
+
+    <div id="map-wrap">
+      <div id="map"></div>
+      <div id="tap-hint">
+        <span>👆 Tap the map to place your guess</span>
+      </div>
+    </div>
+
+    <div id="result-panel" class="hidden">
+      <div id="result-inner">
+        <img id="landmark-image" src="" alt="Landmark photo" />
+        <div id="result-text">
+          <h3 id="result-name"></h3>
+          <p id="result-location"></p>
+          <p id="result-distance"></p>
+          <p id="result-points"></p>
+        </div>
+      </div>
+      <button id="new-round-btn" onclick="newRound()">Next Round ▶</button>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

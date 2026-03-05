@@ -144,6 +144,11 @@ function freshDeck() {
   return deck;
 }
 
+// ── Image proxy (bypasses Wikimedia cross-origin block on iOS Safari) ─────────
+function proxyImg(url) {
+  return 'https://wsrv.nl/?url=' + encodeURIComponent(url) + '&w=300&h=300&fit=cover';
+}
+
 // ── DOM helpers ───────────────────────────────────────────────────────────────
 function $(id) { return document.getElementById(id); }
 
@@ -178,7 +183,7 @@ function newRound() {
 
   // Update UI
   $('landmark-name').textContent = currentLandmark.name;
-  $('challenge-image').src = currentLandmark.image;
+  $('challenge-image').src = proxyImg(currentLandmark.image);
   $('challenge-image').alt = currentLandmark.name;
   $('round').textContent = roundNumber;
   $('score').textContent = totalScore;
@@ -224,7 +229,7 @@ map.on('click', (e) => {
   roundNumber++;
 
   // Populate result panel
-  $('landmark-image').src = lm.image;
+  $('landmark-image').src = proxyImg(lm.image);
   $('landmark-image').alt = lm.name;
   $('result-name').textContent = lm.name;
   $('result-location').textContent = `📍 ${lm.location}`;

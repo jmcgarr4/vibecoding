@@ -3,77 +3,19 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 // ── Landmark data ────────────────────────────────────────────────────────────
+// To add a new landmark, just supply the exact Wikipedia page title (spaces as underscores).
+// The image is fetched automatically from Wikipedia at startup — no image URL needed.
 const LANDMARKS = [
-  {
-    name: 'Eiffel Tower',
-    location: 'Paris, France',
-    lat: 48.8584,
-    lng: 2.2945,
-    image: 'https://images.unsplash.com/photo-Q0-fOL2nqZc?w=300&h=300&fit=crop&auto=format',
-  },
-  {
-    name: 'Great Pyramid of Giza',
-    location: 'Giza, Egypt',
-    lat: 29.9792,
-    lng: 31.1342,
-    image: 'https://images.unsplash.com/photo-F9HMih_ilFY?w=300&h=300&fit=crop&auto=format',
-  },
-  {
-    name: 'Statue of Liberty',
-    location: 'New York, USA',
-    lat: 40.6892,
-    lng: -74.0445,
-    image: 'https://images.unsplash.com/photo-UGi_Ng56FRI?w=300&h=300&fit=crop&auto=format',
-  },
-  {
-    name: 'Taj Mahal',
-    location: 'Agra, India',
-    lat: 27.1751,
-    lng: 78.0421,
-    image: 'https://images.unsplash.com/photo-e22GaIs1VuU?w=300&h=300&fit=crop&auto=format',
-  },
-  {
-    name: 'Christ the Redeemer',
-    location: 'Rio de Janeiro, Brazil',
-    lat: -22.9519,
-    lng: -43.2105,
-    image: 'https://images.unsplash.com/photo-OkiDIla7K8Q?w=300&h=300&fit=crop&auto=format',
-  },
-  {
-    name: 'Sydney Opera House',
-    location: 'Sydney, Australia',
-    lat: -33.8568,
-    lng: 151.2153,
-    image: 'https://images.unsplash.com/photo-7Zb7kUyQg1E?w=300&h=300&fit=crop&auto=format',
-  },
-  {
-    name: 'Machu Picchu',
-    location: 'Cusco Region, Peru',
-    lat: -13.1631,
-    lng: -72.5450,
-    image: 'https://images.unsplash.com/photo-CAKGakBldi8?w=300&h=300&fit=crop&auto=format',
-  },
-  {
-    name: 'Mount Fuji',
-    location: 'Honshu, Japan',
-    lat: 35.3606,
-    lng: 138.7274,
-    image: 'https://images.unsplash.com/photo-N4DbvTUDikw?w=300&h=300&fit=crop&auto=format',
-  },
-  {
-    name: 'Colosseum',
-    location: 'Rome, Italy',
-    lat: 41.8902,
-    lng: 12.4922,
-    image: 'https://images.unsplash.com/photo-XtWH3SxfK9U?w=300&h=300&fit=crop&auto=format',
-  },
-  {
-    name: 'Big Ben',
-    location: 'London, United Kingdom',
-    lat: 51.5007,
-    lng: -0.1246,
-    image: 'https://images.unsplash.com/photo-iXqTqC-f6jI?w=300&h=300&fit=crop&auto=format',
-  },
+  { name: 'Eiffel Tower',         location: 'Paris, France',              lat: 48.8584,  lng:   2.2945,  wiki: 'Eiffel_Tower' },
+  { name: 'Great Pyramid of Giza',location: 'Giza, Egypt',                lat: 29.9792,  lng:  31.1342,  wiki: 'Great_Pyramid_of_Giza' },
+  { name: 'Statue of Liberty',    location: 'New York, USA',              lat: 40.6892,  lng: -74.0445,  wiki: 'Statue_of_Liberty' },
+  { name: 'Taj Mahal',            location: 'Agra, India',                lat: 27.1751,  lng:  78.0421,  wiki: 'Taj_Mahal' },
+  { name: 'Christ the Redeemer',  location: 'Rio de Janeiro, Brazil',     lat: -22.9519, lng: -43.2105,  wiki: 'Christ_the_Redeemer_(statue)' },
+  { name: 'Sydney Opera House',   location: 'Sydney, Australia',          lat: -33.8568, lng: 151.2153,  wiki: 'Sydney_Opera_House' },
+  { name: 'Machu Picchu',         location: 'Cusco Region, Peru',         lat: -13.1631, lng: -72.5450,  wiki: 'Machu_Picchu' },
+  { name: 'Mount Fuji',           location: 'Honshu, Japan',              lat:  35.3606, lng: 138.7274,  wiki: 'Mount_Fuji' },
+  { name: 'Colosseum',            location: 'Rome, Italy',                lat:  41.8902, lng:  12.4922,  wiki: 'Colosseum' },
+  { name: 'Big Ben',              location: 'London, United Kingdom',     lat:  51.5007, lng:  -0.1246,  wiki: 'Big_Ben' },
 ];
 
 // ── Scoring thresholds ────────────────────────────────────────────────────────
@@ -242,6 +184,24 @@ map.on('click', (e) => {
   showResultPanel();
 });
 
+// ── Load images from Wikipedia REST API ──────────────────────────────────────
+// Wikipedia's REST API has CORS enabled and is designed for third-party use.
+// Each landmark only needs a `wiki` page title — no image URL maintenance required.
+async function loadWikiImages() {
+  await Promise.all(LANDMARKS.map(async (lm) => {
+    try {
+      const res  = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(lm.wiki)}`);
+      const data = await res.json();
+      lm.image   = data.thumbnail?.source ?? '';
+    } catch (_) {
+      lm.image = '';
+    }
+  }));
+}
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
-shuffledDeck = freshDeck();
-newRound();
+$('landmark-name').textContent = 'Loading images…';
+loadWikiImages().then(() => {
+  shuffledDeck = freshDeck();
+  newRound();
+});

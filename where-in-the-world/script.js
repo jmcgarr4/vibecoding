@@ -192,7 +192,8 @@ async function loadWikiImages() {
     try {
       const res  = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(lm.wiki)}`);
       const data = await res.json();
-      lm.image   = data.thumbnail?.source ?? '';
+      const src  = data.thumbnail?.source ?? '';
+      lm.image   = src ? `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=320&output=jpg` : '';
     } catch (_) {
       lm.image = '';
     }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Livy's Race Game! 🏆</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- HOME SCREEN -->
+    <div id="screen-home" class="screen active">
+      <div class="title-block">
+        <div class="title-emoji">🏆</div>
+        <h1>Livy's<br>Race Game!</h1>
+        <p>Build your machine and race to win!</p>
+      </div>
+      <div class="vehicle-grid">
+        <button class="vehicle-card" onclick="startGame('car')">
+          <div class="vehicle-icon">🏎️</div>
+          <div class="vehicle-name">Race Car</div>
+          <div class="vehicle-track">🛣️ Land Race</div>
+        </button>
+        <button class="vehicle-card" onclick="startGame('airplane')">
+          <div class="vehicle-icon">✈️</div>
+          <div class="vehicle-name">Airplane</div>
+          <div class="vehicle-track">☁️ Sky Race</div>
+        </button>
+        <button class="vehicle-card" onclick="startGame('submarine')">
+          <div class="vehicle-icon">🐬</div>
+          <div class="vehicle-name">Submarine</div>
+          <div class="vehicle-track">🌊 Ocean Race</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- BUILD SCREEN -->
+    <div id="screen-build" class="screen">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <div class="factory-header">
+        <h2 id="factory-title">🏭 Factory</h2>
+        <div class="parts-bar">
+          <div class="part-slot" id="part-slot-0"><span class="part-q">❓</span></div>
+          <div class="part-slot" id="part-slot-1"><span class="part-q">❓</span></div>
+          <div class="part-slot" id="part-slot-2"><span class="part-q">❓</span></div>
+        </div>
+        <div id="build-progress-text">Solve puzzles to build your machine!</div>
+      </div>
+
+      <div id="puzzle-container">
+        <div id="puzzle-number"></div>
+        <div id="puzzle-question"></div>
+        <div id="puzzle-display"></div>
+        <div id="puzzle-choices" class="choices-grid"></div>
+        <div id="puzzle-feedback" class="feedback hidden"></div>
+      </div>
+    </div>
+
+    <!-- RACE SCREEN -->
+    <div id="screen-race" class="screen">
+      <h2 id="race-header">🏁 Race Time! 🏁</h2>
+      <div id="countdown" class="countdown hidden">3</div>
+      <div id="race-track-container">
+        <div id="race-track">
+          <div class="race-lane" id="lane-livy">
+            <div class="lane-label">Livy</div>
+            <div class="race-vehicle" id="vehicle-livy"></div>
+            <div class="finish-flag">🏁</div>
+          </div>
+          <div class="lane-divider"></div>
+          <div class="race-lane" id="lane-computer">
+            <div class="lane-label">Computer</div>
+            <div class="race-vehicle" id="vehicle-computer"></div>
+            <div class="finish-flag">🏁</div>
+          </div>
+        </div>
+      </div>
+      <div id="race-status"></div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="screen-result" class="screen">
+      <div id="result-animation"></div>
+      <h2 id="result-title"></h2>
+      <p id="result-message"></p>
+      <div id="result-score"></div>
+      <button class="big-btn" onclick="goHome()">Play Again! 🎮</button>
+    </div>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

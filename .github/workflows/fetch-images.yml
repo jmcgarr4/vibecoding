@@ -1,0 +1,67 @@
+name: Fetch landmark images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'where-in-the-world/script.js'
+  workflow_dispatch:
+
+jobs:
+  fetch-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download landmark thumbnails from Wikipedia
+        run: |
+          mkdir -p where-in-the-world/images
+          python3 << 'PYEOF'
+          import urllib.request, json, sys
+
+          LANDMARKS = [
+            ('Eiffel_Tower',               'eiffel_tower'),
+            ('Great_Pyramid_of_Giza',      'great_pyramid'),
+            ('Statue_of_Liberty',          'statue_of_liberty'),
+            ('Taj_Mahal',                  'taj_mahal'),
+            ('Christ_the_Redeemer_(statue)', 'christ_redeemer'),
+            ('Sydney_Opera_House',         'sydney_opera_house'),
+            ('Machu_Picchu',               'machu_picchu'),
+            ('Mount_Fuji',                 'mount_fuji'),
+            ('Colosseum',                  'colosseum'),
+            ('Big_Ben',                    'big_ben'),
+          ]
+
+          images = {}
+          for wiki, slug in LANDMARKS:
+              try:
+                  req = urllib.request.Request(
+                      f'https://en.wikipedia.org/api/rest_v1/page/summary/{wiki}',
+                      headers={'User-Agent': 'LandmarkGame/1.0 (github.com/jmcgarr4/vibecoding)'}
+                  )
+                  data = json.loads(urllib.request.urlopen(req, timeout=15).read())
+                  thumb = data.get('thumbnail', {}).get('source', '')
+                  if thumb:
+                      urllib.request.urlretrieve(thumb, f'where-in-the-world/images/{slug}.jpg')
+                      images[wiki] = f'images/{slug}.jpg'
+                      print(f'✓ {slug}')
+                  else:
+                      print(f'✗ no thumbnail: {wiki}', file=sys.stderr)
+              except Exception as e:
+                  print(f'✗ {wiki}: {e}', file=sys.stderr)
+
+          with open('where-in-the-world/landmark-images.json', 'w') as f:
+              json.dump(images, f, indent=2)
+          print('Wrote landmark-images.json')
+          PYEOF
+
+      - name: Commit images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add where-in-the-world/images/ where-in-the-world/landmark-images.json
+          git diff --staged --quiet && echo "No changes" || \
+            (git commit -m "Update landmark images [skip ci]" && git push)

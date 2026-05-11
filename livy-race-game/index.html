@@ -9,88 +9,108 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="app">
+<div id="app">
 
-    <!-- HOME SCREEN -->
-    <div id="screen-home" class="screen active">
-      <div class="title-block">
-        <div class="title-emoji">🏆</div>
-        <h1>Livy's<br>Race Game!</h1>
-        <p>Build your machine and race to win!</p>
-      </div>
-      <div class="vehicle-grid">
-        <button class="vehicle-card" onclick="startGame('car')">
-          <div class="vehicle-icon">🏎️</div>
-          <div class="vehicle-name">Race Car</div>
-          <div class="vehicle-track">🛣️ Land Race</div>
-        </button>
-        <button class="vehicle-card" onclick="startGame('airplane')">
-          <div class="vehicle-icon">✈️</div>
-          <div class="vehicle-name">Airplane</div>
-          <div class="vehicle-track">☁️ Sky Race</div>
-        </button>
-        <button class="vehicle-card" onclick="startGame('submarine')">
-          <div class="vehicle-icon">🐬</div>
-          <div class="vehicle-name">Submarine</div>
-          <div class="vehicle-track">🌊 Ocean Race</div>
-        </button>
-      </div>
+  <!-- HOME SCREEN -->
+  <div id="screen-home" class="screen active">
+    <div class="title-block">
+      <div class="title-emoji">🏆</div>
+      <h1>Livy's<br>Race Game!</h1>
+      <p>Build your machine and race to win!</p>
     </div>
-
-    <!-- BUILD SCREEN -->
-    <div id="screen-build" class="screen">
-      <button class="back-btn" onclick="goHome()">← Back</button>
-      <div class="factory-header">
-        <h2 id="factory-title">🏭 Factory</h2>
-        <div class="parts-bar">
-          <div class="part-slot" id="part-slot-0"><span class="part-q">❓</span></div>
-          <div class="part-slot" id="part-slot-1"><span class="part-q">❓</span></div>
-          <div class="part-slot" id="part-slot-2"><span class="part-q">❓</span></div>
-        </div>
-        <div id="build-progress-text">Solve puzzles to build your machine!</div>
-      </div>
-
-      <div id="puzzle-container">
-        <div id="puzzle-number"></div>
-        <div id="puzzle-question"></div>
-        <div id="puzzle-display"></div>
-        <div id="puzzle-choices" class="choices-grid"></div>
-        <div id="puzzle-feedback" class="feedback hidden"></div>
-      </div>
+    <div class="vehicle-grid">
+      <button class="vehicle-card" onclick="startGame('car')">
+        <div class="vehicle-icon">🏎️</div>
+        <div class="vehicle-name">Race Car</div>
+        <div class="vehicle-track">🛣️ Land</div>
+      </button>
+      <button class="vehicle-card" onclick="startGame('airplane')">
+        <div class="vehicle-icon">✈️</div>
+        <div class="vehicle-name">Airplane</div>
+        <div class="vehicle-track">☁️ Sky</div>
+      </button>
+      <button class="vehicle-card" onclick="startGame('submarine')">
+        <div class="vehicle-icon">🐬</div>
+        <div class="vehicle-name">Submarine</div>
+        <div class="vehicle-track">🌊 Ocean</div>
+      </button>
     </div>
-
-    <!-- RACE SCREEN -->
-    <div id="screen-race" class="screen">
-      <h2 id="race-header">🏁 Race Time! 🏁</h2>
-      <div id="countdown" class="countdown hidden">3</div>
-      <div id="race-track-container">
-        <div id="race-track">
-          <div class="race-lane" id="lane-livy">
-            <div class="lane-label">Livy</div>
-            <div class="race-vehicle" id="vehicle-livy"></div>
-            <div class="finish-flag">🏁</div>
-          </div>
-          <div class="lane-divider"></div>
-          <div class="race-lane" id="lane-computer">
-            <div class="lane-label">Computer</div>
-            <div class="race-vehicle" id="vehicle-computer"></div>
-            <div class="finish-flag">🏁</div>
-          </div>
-        </div>
-      </div>
-      <div id="race-status"></div>
-    </div>
-
-    <!-- RESULT SCREEN -->
-    <div id="screen-result" class="screen">
-      <div id="result-animation"></div>
-      <h2 id="result-title"></h2>
-      <p id="result-message"></p>
-      <div id="result-score"></div>
-      <button class="big-btn" onclick="goHome()">Play Again! 🎮</button>
-    </div>
-
   </div>
-  <script src="script.js"></script>
+
+  <!-- BUILD SCREEN -->
+  <div id="screen-build" class="screen">
+    <button class="back-btn" onclick="goHome()">← Back</button>
+    <div class="factory-header">
+      <h2 id="factory-title">🏭 Factory</h2>
+      <div class="parts-bar">
+        <div class="part-slot" id="part-slot-0"><span class="part-q">❓</span></div>
+        <div class="part-slot" id="part-slot-1"><span class="part-q">❓</span></div>
+        <div class="part-slot" id="part-slot-2"><span class="part-q">❓</span></div>
+      </div>
+      <div id="build-progress-text">Solve puzzles to build your machine!</div>
+    </div>
+    <div id="puzzle-container">
+      <div id="puzzle-number"></div>
+      <div id="puzzle-question"></div>
+      <div id="puzzle-display"></div>
+      <div id="puzzle-choices" class="choices-grid"></div>
+      <div id="puzzle-feedback" class="feedback hidden"></div>
+    </div>
+  </div>
+
+  <!-- RACE SCREEN -->
+  <div id="screen-race" class="screen">
+    <!-- Progress bars -->
+    <div id="race-progress">
+      <div class="prog-row">
+        <span class="prog-racer-label">Livy</span>
+        <div class="prog-track"><div class="prog-fill" id="livy-fill"></div></div>
+        <span class="prog-flag">🏁</span>
+      </div>
+      <div class="prog-row">
+        <span class="prog-racer-label">CPU</span>
+        <div class="prog-track"><div class="prog-fill" id="cpu-fill"></div></div>
+        <span class="prog-flag">🏁</span>
+      </div>
+    </div>
+
+    <!-- Livy's main game lane (tap to jump) -->
+    <div id="game-lane" onclick="handleJump()">
+      <div id="game-bg"></div>
+      <div id="ground-line"></div>
+      <div id="livy-runner">🏎️</div>
+      <div id="obstacle-layer"></div>
+      <div id="warning-sign" class="hidden">⚠️ JUMP!</div>
+      <div id="hit-flash" class="hidden"></div>
+      <!-- Countdown overlay (shown before race starts) -->
+      <div id="race-countdown">
+        <div id="countdown-num">3</div>
+      </div>
+    </div>
+
+    <!-- Jump button -->
+    <button id="jump-btn" onclick="handleJump()">JUMP! 🚀</button>
+
+    <!-- Computer's lane (display only) -->
+    <div id="cpu-lane">
+      <span id="cpu-lane-label">Computer</span>
+      <div id="cpu-bg"></div>
+      <div id="cpu-ground-line"></div>
+      <div id="cpu-runner">🚗</div>
+      <div id="cpu-obstacle-layer"></div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="screen-result" class="screen">
+    <div id="result-animation"></div>
+    <h2 id="result-title"></h2>
+    <p id="result-message"></p>
+    <div id="result-score"></div>
+    <button class="big-btn" onclick="goHome()">Play Again! 🎮</button>
+  </div>
+
+</div>
+<script src="script.js"></script>
 </body>
 </html>

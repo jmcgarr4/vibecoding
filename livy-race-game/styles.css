@@ -92,31 +92,27 @@ body {
 
 .speed-btns {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   justify-content: center;
 }
 
-.speed-btn {
+.speed-num-btn {
   flex: 1;
-  background: rgba(255,255,255,0.12);
-  border: 3px solid rgba(255,255,255,0.25);
-  border-radius: 14px;
-  padding: 10px 4px;
+  aspect-ratio: 1;
+  border: 3px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
   color: white;
   font-family: inherit;
-  font-size: 0.95em;
+  font-size: 0.85em;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.1s, background 0.1s;
+  transition: transform 0.1s, border-color 0.1s;
+  padding: 0;
+  min-width: 0;
 }
 
-.speed-btn:active { transform: scale(0.94); }
-
-.speed-btn.active {
-  background: rgba(255,217,61,0.3);
-  border-color: #FFD93D;
-  color: #FFD93D;
-}
+.speed-num-btn:active  { transform: scale(0.88); }
+.speed-num-btn.active  { border-color: white; border-width: 3px; transform: scale(1.12); }
 
 .vehicle-grid {
   display: flex;

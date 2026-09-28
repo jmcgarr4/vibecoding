@@ -96,21 +96,72 @@ const PUZZLE_POOL = [
   { id:'wrd-red', type:'word', question:'Find the word:  R E D',  choices:['bed','fed','red','led'], correctIndex:2 },
 ];
 
-// ===== SPEED SETTING =====
-// Multipliers for obstacle speed, frequency, and CPU speed
-const SPEED_SETTINGS = {
-  slow:   { obsBase: 140, obsRamp: 3,  freqBase: 3.2, freqMin: 1.8, cpuMin: 55,  cpuMax: 75  },
-  normal: { obsBase: 210, obsRamp: 5,  freqBase: 2.2, freqMin: 1.2, cpuMin: 80,  cpuMax: 110 },
-  fast:   { obsBase: 300, obsRamp: 8,  freqBase: 1.5, freqMin: 0.8, cpuMin: 110, cpuMax: 145 },
-};
-let selectedSpeed = 'normal';
+// ===== SPEED SETTING (0–10) =====
+// Colors: black(0) → red → orange → yellow → green(10)
+const SPEED_COLORS = [
+  '#111111', // 0  black
+  '#4a0a0a', // 1  very dark red
+  '#7f1d1d', // 2  dark red
+  '#b91c1c', // 3  red
+  '#c2410c', // 4  red-orange
+  '#ea580c', // 5  orange
+  '#d97706', // 6  amber
+  '#ca8a04', // 7  dark yellow
+  '#84cc16', // 8  yellow-green
+  '#22c55e', // 9  green
+  '#15803d', // 10 deep green
+];
+const SPEED_NAMES = ['Nothing','1','2','3','4','5','6','7','8','9','BLAST'];
+
+let selectedSpeed = 5; // default: middle
+
+function buildSpeedPicker() {
+  const container = el('speed-btns');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let i = 0; i <= 10; i++) {
+    const b = document.createElement('button');
+    b.className = 'speed-num-btn' + (i === selectedSpeed ? ' active' : '');
+    b.textContent = i;
+    b.style.background = SPEED_COLORS[i];
+    b.addEventListener('click', () => setSpeed(i));
+    container.appendChild(b);
+  }
+  updateSpeedLabel();
+}
 
 function setSpeed(s) {
   selectedSpeed = s;
-  ['slow','normal','fast'].forEach(k => {
-    const b = el('speed-' + k);
-    if (b) b.classList.toggle('active', k === s);
+  document.querySelectorAll('.speed-num-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === s);
   });
+  updateSpeedLabel();
+}
+
+function updateSpeedLabel() {
+  const nameEl = el('speed-name');
+  if (nameEl) {
+    nameEl.textContent = SPEED_NAMES[selectedSpeed];
+    nameEl.style.color = SPEED_COLORS[selectedSpeed] === '#111111' ? '#888' : SPEED_COLORS[selectedSpeed];
+    nameEl.style.fontWeight = 'bold';
+  }
+}
+
+// Map speed 0–10 to race parameters
+function getSpeedParams() {
+  const s = selectedSpeed;
+  if (s === 0) {
+    // "Nothing" — no obstacles, very gentle
+    return { obsBase: 0, obsRamp: 0, freqBase: 9999, freqMin: 9999, cpuMin: 40, cpuMax: 55 };
+  }
+  return {
+    obsBase:   80  + s * 32,                // 112 (s=1) → 400 (s=10)
+    obsRamp:   1.5 + s * 0.7,              // 2.2 → 8.5
+    freqBase:  3.5 - s * 0.24,             // 3.26 → 1.1
+    freqMin:   Math.max(0.6, 2.2 - s * 0.16), // 2.04 → 0.6
+    cpuMin:    40  + s * 10,               // 50 → 140
+    cpuMax:    60  + s * 12,               // 72 → 180
+  };
 }
 
 // ===== GAME STATE =====
@@ -155,7 +206,7 @@ function makeRaceState() {
     cpuDist:       0,
     livySpeed:     SPEED_PROFILES[score],
     livyBaseSpeed: SPEED_PROFILES[score],
-    cpuSpeed:      SPEED_SETTINGS[selectedSpeed].cpuMin + Math.random() * (SPEED_SETTINGS[selectedSpeed].cpuMax - SPEED_SETTINGS[selectedSpeed].cpuMin),
+    cpuSpeed:      getSpeedParams().cpuMin + Math.random() * (getSpeedParams().cpuMax - getSpeedParams().cpuMin),
     jumpForce:     jf,
     gravity:       grav,
     vehicleY:      0,    // px above ground
@@ -163,9 +214,9 @@ function makeRaceState() {
     isJumping:     false,
     hitTimer:      0,
     obstacles:     [],
-    nextObsIn:     SPEED_SETTINGS[selectedSpeed].freqBase,
-    obsTimer:      SPEED_SETTINGS[selectedSpeed].freqBase,
-    obsSpeed:      SPEED_SETTINGS[selectedSpeed].obsBase,
+    nextObsIn:     getSpeedParams().freqBase,
+    obsTimer:      getSpeedParams().freqBase,
+    obsSpeed:      getSpeedParams().obsBase,
     cpuObsTimer:   2.5 + Math.random() * 1.5,
     cpuHitTimer:   0,
     laneW:         0,    // set at start
@@ -458,8 +509,8 @@ function gameLoop(ts) {
   }
 
   // --- Difficulty ramp ---
-  const sp = SPEED_SETTINGS[selectedSpeed];
-  R.obsSpeed  = sp.obsBase  + Math.min(R.raceTime * sp.obsRamp, sp.obsBase * 0.45);
+  const sp = getSpeedParams();
+  R.obsSpeed  = sp.obsBase + Math.min(R.raceTime * sp.obsRamp, sp.obsBase * 0.45);
   R.nextObsIn = Math.max(sp.freqMin, sp.freqBase - R.raceTime * 0.04);
 
   // --- Spawn obstacles ---
@@ -615,6 +666,9 @@ function handleJump() {
 }
 
 // Keyboard support
+// Build speed picker on load
+document.addEventListener('DOMContentLoaded', buildSpeedPicker);
+
 document.addEventListener('keydown', e => {
   if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); handleJump(); }
 });

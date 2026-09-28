@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Livy's Race Game! 🏆</title>
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
 <div id="app">
@@ -20,12 +20,8 @@
     </div>
     <!-- Speed picker -->
     <div class="speed-picker">
-      <div class="speed-label">Race Speed:</div>
-      <div class="speed-btns">
-        <button class="speed-btn" id="speed-slow"   onclick="setSpeed('slow')">🐢 Slow</button>
-        <button class="speed-btn active" id="speed-normal" onclick="setSpeed('normal')">🏃 Normal</button>
-        <button class="speed-btn" id="speed-fast"   onclick="setSpeed('fast')">⚡ Fast</button>
-      </div>
+      <div class="speed-label">Race Speed: <span id="speed-name">5</span></div>
+      <div class="speed-btns" id="speed-btns"></div>
     </div>
 
     <div class="vehicle-grid">
@@ -121,6 +117,6 @@
   </div>
 
 </div>
-<script src="script.js?v=3"></script>
+<script src="script.js?v=4"></script>
 </body>
 </html>

@@ -78,6 +78,46 @@ body {
   margin-top: 8px;
 }
 
+.speed-picker {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.speed-label {
+  font-size: 0.95em;
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+
+.speed-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.speed-btn {
+  flex: 1;
+  background: rgba(255,255,255,0.12);
+  border: 3px solid rgba(255,255,255,0.25);
+  border-radius: 14px;
+  padding: 10px 4px;
+  color: white;
+  font-family: inherit;
+  font-size: 0.95em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.1s;
+}
+
+.speed-btn:active { transform: scale(0.94); }
+
+.speed-btn.active {
+  background: rgba(255,217,61,0.3);
+  border-color: #FFD93D;
+  color: #FFD93D;
+}
+
 .vehicle-grid {
   display: flex;
   gap: 12px;

@@ -96,6 +96,23 @@ const PUZZLE_POOL = [
   { id:'wrd-red', type:'word', question:'Find the word:  R E D',  choices:['bed','fed','red','led'], correctIndex:2 },
 ];
 
+// ===== SPEED SETTING =====
+// Multipliers for obstacle speed, frequency, and CPU speed
+const SPEED_SETTINGS = {
+  slow:   { obsBase: 140, obsRamp: 3,  freqBase: 3.2, freqMin: 1.8, cpuMin: 55,  cpuMax: 75  },
+  normal: { obsBase: 210, obsRamp: 5,  freqBase: 2.2, freqMin: 1.2, cpuMin: 80,  cpuMax: 110 },
+  fast:   { obsBase: 300, obsRamp: 8,  freqBase: 1.5, freqMin: 0.8, cpuMin: 110, cpuMax: 145 },
+};
+let selectedSpeed = 'normal';
+
+function setSpeed(s) {
+  selectedSpeed = s;
+  ['slow','normal','fast'].forEach(k => {
+    const b = el('speed-' + k);
+    if (b) b.classList.toggle('active', k === s);
+  });
+}
+
 // ===== GAME STATE =====
 let state = {
   vehicle: null,
@@ -110,7 +127,7 @@ let state = {
 const GROUND_PAD   = 26;   // px from bottom of lane — vehicle rests here
 const OBS_HEIGHT   = 55;   // px — obstacle sits on ground, this tall
 const VEH_HEIGHT   = 50;   // px — vehicle height for collision
-const RACE_DIST    = 2200; // abstract distance units
+const RACE_DIST    = 4500; // abstract distance units (longer race)
 const HIT_PENALTY  = 1.8;  // seconds of slowdown
 const HIT_SPEED    = 25;   // units/s while penalised
 
@@ -122,8 +139,8 @@ const JUMP_PROFILES = [
   [360, 460],  // 3/3 — floaty, easiest to time
 ];
 
-// Per-score Livy base speed
-const SPEED_PROFILES = [68, 82, 96, 115];
+// Per-score Livy base speed (tuned for longer RACE_DIST)
+const SPEED_PROFILES = [85, 100, 118, 140];
 
 // ===== RACE STATE =====
 let R = null; // reset each race
@@ -138,17 +155,17 @@ function makeRaceState() {
     cpuDist:       0,
     livySpeed:     SPEED_PROFILES[score],
     livyBaseSpeed: SPEED_PROFILES[score],
-    cpuSpeed:      80 + Math.random() * 30,  // 80–110
+    cpuSpeed:      SPEED_SETTINGS[selectedSpeed].cpuMin + Math.random() * (SPEED_SETTINGS[selectedSpeed].cpuMax - SPEED_SETTINGS[selectedSpeed].cpuMin),
     jumpForce:     jf,
     gravity:       grav,
     vehicleY:      0,    // px above ground
     velocityY:     0,    // px/s
     isJumping:     false,
-    hitTimer:      0,    // remaining penalty seconds
-    obstacles:     [],   // { el, x, speed, passed }
-    nextObsIn:     2.2,  // seconds until next obstacle
-    obsTimer:      2.2,
-    obsSpeed:      210,  // px/s
+    hitTimer:      0,
+    obstacles:     [],
+    nextObsIn:     SPEED_SETTINGS[selectedSpeed].freqBase,
+    obsTimer:      SPEED_SETTINGS[selectedSpeed].freqBase,
+    obsSpeed:      SPEED_SETTINGS[selectedSpeed].obsBase,
     cpuObsTimer:   2.5 + Math.random() * 1.5,
     cpuHitTimer:   0,
     laneW:         0,    // set at start
@@ -440,9 +457,10 @@ function gameLoop(ts) {
     if (R.hitTimer <= 0) { R.livySpeed = R.livyBaseSpeed; R.hitTimer = 0; el('hit-flash').classList.add('hidden'); }
   }
 
-  // --- Difficulty ramp: increase obstacle speed and frequency over time ---
-  R.obsSpeed   = 210 + Math.min(R.raceTime * 5, 90);   // 210→300 over 18s
-  R.nextObsIn  = Math.max(1.2, 2.2 - R.raceTime * 0.04); // 2.2→1.2 over 25s
+  // --- Difficulty ramp ---
+  const sp = SPEED_SETTINGS[selectedSpeed];
+  R.obsSpeed  = sp.obsBase  + Math.min(R.raceTime * sp.obsRamp, sp.obsBase * 0.45);
+  R.nextObsIn = Math.max(sp.freqMin, sp.freqBase - R.raceTime * 0.04);
 
   // --- Spawn obstacles ---
   R.obsTimer -= dt;

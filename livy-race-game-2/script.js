@@ -6,7 +6,7 @@ const VEHICLES = {
     name: 'Race Car',
     emoji: '🏎️', computerEmoji: '🚗',
     parts: ['🛞', '🚘', '⚡'], partNames: ['Wheels', 'Body', 'Engine'],
-    track: 'road',
+    track: 'road', flip: true,
     obstacles: ['🪨', '🚧', '🌵'],
     readyMsg: 'Your Race Car is READY!',
   },
@@ -22,7 +22,7 @@ const VEHICLES = {
     name: 'Submarine',
     emoji: '🐬', computerEmoji: '🐋',
     parts: ['🔩', '🛥️', '🌊'], partNames: ['Propeller', 'Hull', 'Fins'],
-    track: 'ocean',
+    track: 'ocean', flip: true,
     obstacles: ['🪸', '🐙', '🌿'],
     readyMsg: 'Your Submarine is READY!',
   },
@@ -346,6 +346,18 @@ function goHome() {
 
 // ===== BUILD PHASE =====
 function startGame(vehicleKey) {
+  const nameInput = el('player-name');
+  const name = nameInput.value.trim();
+  if (!name) {
+    nameInput.classList.remove('need-name');
+    void nameInput.offsetWidth;
+    nameInput.classList.add('need-name');
+    nameInput.focus();
+    playSound('wrong');
+    return;
+  }
+  nameInput.classList.remove('need-name');
+  state.playerName = name;
   getCtx();
   const v = VEHICLES[vehicleKey];
   state.vehicle = vehicleKey;
@@ -475,6 +487,9 @@ function startRace() {
 
   el('livy-runner').textContent = v.emoji;
   el('cpu-runner').textContent  = v.computerEmoji;
+  el('player-label').textContent = state.playerName;
+  el('livy-runner').classList.toggle('flip', !!v.flip);
+  el('cpu-runner').classList.toggle('flip', !!v.flip);
 
   ['road','sky','ocean'].forEach(c=>{ el('game-bg').classList.remove(c); el('cpu-bg').classList.remove(c); });
   el('game-bg').classList.add(v.track);
@@ -693,13 +708,13 @@ function showResult(winner) {
   const anim=el('result-animation'), title=el('result-title'), msg=el('result-message'), score=el('result-score');
   if (winner === 'livy') {
     anim.textContent  = '🏆';
-    title.textContent = 'Livy Wins!!! 🎉';
-    msg.textContent   = pick(['Amazing steering! You are a champion!','Incredible! You crushed it!','Woohoo! That was AWESOME!']);
+    title.textContent = `${state.playerName} Wins!!! 🎉`;
+    msg.textContent   = pick([`Amazing steering, ${state.playerName}! You are the champion!`,`Incredible, ${state.playerName}! You crushed it!`,`Woohoo, ${state.playerName}! That was AWESOME!`]);
     playSound('win');
     launchConfetti();
   } else {
     anim.textContent  = '💪';
-    title.textContent = 'So Close!';
+    title.textContent = `So Close, ${state.playerName}!`;
     msg.textContent   = pick(['Great effort! Try again and steer faster!','You almost had it! Give it another go!','Dodge those obstacles — you can do it!']);
     playSound('lose');
   }

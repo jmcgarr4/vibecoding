@@ -50,7 +50,7 @@ body {
 /* ===== HOME ===== */
 .title-block {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
 }
 
 .title-emoji {
@@ -77,6 +77,37 @@ body {
   opacity: 0.85;
   margin-top: 8px;
 }
+
+.name-box {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.name-box label {
+  display: block;
+  font-size: 1.05em;
+  margin-bottom: 6px;
+}
+
+#player-name {
+  width: 80%;
+  max-width: 280px;
+  font-family: inherit;
+  font-size: 1.3em;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 3px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.95);
+  color: #3D3490;
+  text-align: center;
+  outline: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+#player-name:focus     { border-color: #FFD93D; }
+#player-name.need-name { border-color: #FF6B6B; animation: shake 0.4s ease; }
 
 .speed-picker {
   width: 100%;
@@ -307,8 +338,12 @@ body {
 .prog-racer-label {
   font-size: 0.85em;
   font-weight: bold;
-  width: 44px;
+  min-width: 44px;
+  max-width: 80px;
   flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .prog-track {
@@ -407,6 +442,9 @@ body {
   filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
   transition: none;
 }
+
+/* Emoji vehicles face left by default; mirror so they face the finish */
+#livy-runner.flip, #cpu-runner.flip { transform: scaleX(-1); }
 
 /* ===== OBSTACLES ===== */
 #obstacle-layer, #cpu-obstacle-layer {

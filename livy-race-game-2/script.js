@@ -28,59 +28,135 @@ const VEHICLES = {
   },
 };
 
-// ===== PUZZLE POOL (ages 5–7) =====
-const PUZZLE_POOL = [
-  { id:'col-red',    type:'color', question:'Tap the 🔴 RED one!',
-    choices:[{label:'RED',color:'#EF4444',correct:true},{label:'BLUE',color:'#3B82F6',correct:false},{label:'GREEN',color:'#22C55E',correct:false},{label:'YELLOW',color:'#EAB308',correct:false}] },
-  { id:'col-blue',   type:'color', question:'Tap the 🔵 BLUE one!',
-    choices:[{label:'RED',color:'#EF4444',correct:false},{label:'BLUE',color:'#3B82F6',correct:true},{label:'GREEN',color:'#22C55E',correct:false},{label:'YELLOW',color:'#EAB308',correct:false}] },
-  { id:'col-green',  type:'color', question:'Tap the 🟢 GREEN one!',
-    choices:[{label:'PINK',color:'#EC4899',correct:false},{label:'ORANGE',color:'#F97316',correct:false},{label:'GREEN',color:'#22C55E',correct:true},{label:'PURPLE',color:'#A855F7',correct:false}] },
-  { id:'col-yellow', type:'color', question:'Tap the 🟡 YELLOW one!',
-    choices:[{label:'RED',color:'#EF4444',correct:false},{label:'BLUE',color:'#3B82F6',correct:false},{label:'YELLOW',color:'#EAB308',correct:true},{label:'PURPLE',color:'#A855F7',correct:false}] },
-  { id:'col-pink',   type:'color', question:'Tap the 🩷 PINK one!',
-    choices:[{label:'ORANGE',color:'#F97316',correct:false},{label:'PINK',color:'#EC4899',correct:true},{label:'BLUE',color:'#3B82F6',correct:false},{label:'GREEN',color:'#22C55E',correct:false}] },
-  { id:'cnt-6',  type:'count', question:'How many ⭐ do you see?',
-    items:Array(6).fill('⭐'),  choices:['5','6','7','8'], correctIndex:1 },
-  { id:'cnt-7',  type:'count', question:'How many 🍎 do you see?',
-    items:Array(7).fill('🍎'),  choices:['6','7','8','9'], correctIndex:1 },
-  { id:'cnt-8',  type:'count', question:'How many 🐶 do you see?',
-    items:Array(8).fill('🐶'),  choices:['6','7','8','9'], correctIndex:2 },
-  { id:'cnt-9',  type:'count', question:'How many 🌟 do you see?',
-    items:Array(9).fill('🌟'),  choices:['7','8','9','10'], correctIndex:2 },
-  { id:'cnt-10', type:'count', question:'How many 🦋 do you see?',
-    items:Array(10).fill('🦋'), choices:['8','9','10','11'], correctIndex:2 },
-  { id:'shp-circle',   type:'shape', question:'Tap the CIRCLE!',   shapes:['circle','square','triangle','star'], correctIndex:0 },
-  { id:'shp-square',   type:'shape', question:'Tap the SQUARE!',   shapes:['circle','square','triangle','star'], correctIndex:1 },
-  { id:'shp-triangle', type:'shape', question:'Tap the TRIANGLE!', shapes:['circle','square','triangle','star'], correctIndex:2 },
-  { id:'shp-star',     type:'shape', question:'Tap the STAR!',     shapes:['circle','square','triangle','star'], correctIndex:3 },
-  { id:'m-3+4', type:'math', question:'3 + 4 = ?',  choices:['5','6','7','8'], correctIndex:2 },
-  { id:'m-5+3', type:'math', question:'5 + 3 = ?',  choices:['6','7','8','9'], correctIndex:2 },
-  { id:'m-4+5', type:'math', question:'4 + 5 = ?',  choices:['7','8','9','10'], correctIndex:2 },
-  { id:'m-5+5', type:'math', question:'5 + 5 = ?',  choices:['8','9','10','11'], correctIndex:2 },
-  { id:'m-7-3', type:'math', question:'7 − 3 = ?',  choices:['2','3','4','5'], correctIndex:2 },
-  { id:'m-8-4', type:'math', question:'8 − 4 = ?',  choices:['3','4','5','6'], correctIndex:1 },
-  { id:'m-6-2', type:'math', question:'6 − 2 = ?',  choices:['2','3','4','5'], correctIndex:2 },
-  { id:'m-9-5', type:'math', question:'9 − 5 = ?',  choices:['3','4','5','6'], correctIndex:1 },
-  { id:'pat-rb', type:'pattern', question:'What comes next? 🔴🔵🔴🔵🔴 ___',
-    choices:['🔴','🔵','🟢','🟡'], correctIndex:1 },
-  { id:'pat-sm', type:'pattern', question:'What comes next? ⭐🌙⭐🌙⭐ ___',
-    choices:['☀️','🌟','🌙','⭐'], correctIndex:2 },
-  { id:'pat-cd', type:'pattern', question:'What comes next? 🐱🐶🐱🐶🐱 ___',
-    choices:['🐱','🐟','🐶','🐸'], correctIndex:2 },
-  { id:'pat-123',type:'pattern', question:'What comes next? 1️⃣ 2️⃣ 3️⃣ 1️⃣ 2️⃣ 3️⃣ 1️⃣ ___',
-    choices:['1️⃣','2️⃣','3️⃣','4️⃣'], correctIndex:1 },
-  { id:'cmp-1', type:'compare', question:'Which number is BIGGER?',   choices:['3','7'], correctIndex:1 },
-  { id:'cmp-2', type:'compare', question:'Which number is SMALLER?',  choices:['5','2'], correctIndex:1 },
-  { id:'cmp-3', type:'compare', question:'Which number is BIGGER?',   choices:['9','4'], correctIndex:0 },
-  { id:'cmp-4', type:'compare', question:'Which number is SMALLER?',  choices:['8','6'], correctIndex:1 },
-  { id:'cmp-5', type:'compare', question:'Which number is BIGGER?',   choices:['6','10'], correctIndex:1 },
-  { id:'wrd-cat', type:'word', question:'Find the word:  C A T',  choices:['bat','cat','hat','mat'], correctIndex:1 },
-  { id:'wrd-dog', type:'word', question:'Find the word:  D O G',  choices:['bog','fog','dog','log'], correctIndex:2 },
-  { id:'wrd-run', type:'word', question:'Find the word:  R U N',  choices:['gun','sun','bun','run'], correctIndex:3 },
-  { id:'wrd-big', type:'word', question:'Find the word:  B I G',  choices:['big','bag','bug','bog'], correctIndex:0 },
-  { id:'wrd-red', type:'word', question:'Find the word:  R E D',  choices:['bed','fed','red','led'], correctIndex:2 },
+// ===== PUZZLE GENERATORS (random every time, ages 6–8 level) =====
+function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+
+function numChoices(ans, spread = 3, min = 0) {
+  const set = new Set([ans]);
+  while (set.size < 4) {
+    const n = ans + rnd(-spread, spread);
+    if (n >= min) set.add(n);
+  }
+  const arr = shuffle([...set]);
+  return { choices: arr.map(String), correctIndex: arr.indexOf(ans) };
+}
+
+function listChoices(ans, others) {
+  const arr = shuffle([ans, ...shuffle(others.filter(o => o !== ans)).slice(0, 3)]);
+  return { choices: arr, correctIndex: arr.indexOf(ans) };
+}
+
+const WORD_PICS = {
+  cat:'🐱', dog:'🐶', sun:'☀️', fish:'🐟', frog:'🐸', star:'⭐', tree:'🌳', moon:'🌙',
+  ship:'🚢', duck:'🦆', bus:'🚌', cake:'🎂', bird:'🐦', fox:'🦊', pig:'🐷', bee:'🐝',
+  car:'🚗', hat:'🎩', ball:'⚽', book:'📖', bear:'🐻', cow:'🐮', egg:'🥚', snake:'🐍',
+  horse:'🐴', train:'🚂', apple:'🍎', house:'🏠', clock:'🕐', shoe:'👟',
+};
+const VOWELS = 'aeiou', CONSONANTS = 'bcdfghklmnprstw';
+
+function misspell(word) {
+  const i = rnd(0, word.length - 1);
+  const pool = VOWELS.includes(word[i]) ? VOWELS : CONSONANTS;
+  let c = word[i];
+  while (c === word[i]) c = pick(pool.split(''));
+  return word.slice(0, i) + c + word.slice(i + 1);
+}
+
+const COUNT_EMOJIS = ['🍎','⭐','🐶','🦋','🐟','🌸','🚗','🍓','🐥','🎈','🍩','🐞'];
+const PATTERN_EMOJIS = ['🔴','🔵','🟢','🟡','⭐','🌙','🐱','🐶','🍎','🍌','❤️','💜'];
+const ODD_GROUPS = {
+  animals:  ['🐶','🐱','🐮','🐷','🐴','🐰','🦊','🐻'],
+  fruit:    ['🍎','🍌','🍇','🍓','🍊','🍉','🍐','🍒'],
+  vehicles: ['🚗','🚌','🚂','✈️','🚲','🚀','🚤','🚁'],
+  weather:  ['☀️','🌧️','❄️','⛅','🌈','⚡','🌪️','🌙'],
+};
+const COLOR_MIX = [
+  { a:'🔴 RED', b:'🟡 YELLOW', ans:'ORANGE' },
+  { a:'🔵 BLUE', b:'🟡 YELLOW', ans:'GREEN' },
+  { a:'🔴 RED', b:'🔵 BLUE', ans:'PURPLE' },
+  { a:'🔴 RED', b:'⚪ WHITE', ans:'PINK' },
+  { a:'⚫ BLACK', b:'⚪ WHITE', ans:'GRAY' },
 ];
+const COLOR_HEX = { ORANGE:'#F97316', GREEN:'#22C55E', PURPLE:'#A855F7', PINK:'#EC4899', GRAY:'#9CA3AF', BROWN:'#92400E', BLUE:'#3B82F6', RED:'#EF4444' };
+
+const GENERATORS = {
+  add() {
+    const a = rnd(6, 15), b = rnd(4, 20 - a);
+    return { key:`add-${a}-${b}`, question:`${a} + ${b} = ?`, big:true, ...numChoices(a + b) };
+  },
+  subtract() {
+    const a = rnd(11, 20), b = rnd(3, a - 3);
+    return { key:`sub-${a}-${b}`, question:`${a} − ${b} = ?`, big:true, ...numChoices(a - b) };
+  },
+  missing() {
+    const a = rnd(3, 10), c = rnd(a + 3, 18);
+    return { key:`mis-${a}-${c}`, question:`${a} + ? = ${c}`, big:true, ...numChoices(c - a, 3, 1) };
+  },
+  count() {
+    const target = pick(COUNT_EMOJIS);
+    const other = pick(COUNT_EMOJIS.filter(e => e !== target));
+    const n = rnd(8, 15), d = rnd(3, 6);
+    const items = shuffle([...Array(n).fill(target), ...Array(d).fill(other)]);
+    return { key:`cnt-${target}-${n}-${d}`, question:`How many ${target}? (Don't count ${other}!)`,
+      display: items.join(''), big:true, ...numChoices(n, 2, 1) };
+  },
+  skipCount() {
+    const step = pick([2, 5, 10]);
+    const down = Math.random() < 0.3;
+    const start = down ? step * rnd(6, 10) : step * rnd(0, 5);
+    const seq = [0,1,2,3].map(i => start + (down ? -i : i) * step);
+    const ans = start + (down ? -4 : 4) * step;
+    return { key:`skip-${step}-${start}-${down}`, question:'What number comes next?',
+      display: seq.join(', ') + ', ?', big:true, ...numChoices(ans, step, 0) };
+  },
+  beforeAfter() {
+    const n = rnd(12, 99), after = Math.random() < 0.5;
+    const ans = after ? n + 1 : n - 1;
+    return { key:`ba-${n}-${after}`, question:`What number comes ${after ? 'AFTER' : 'BEFORE'} ${n}?`,
+      big:true, ...numChoices(ans, 2, 0) };
+  },
+  compare() {
+    const set = new Set();
+    while (set.size < 3) set.add(rnd(10, 99));
+    const nums = [...set], bigger = Math.random() < 0.5;
+    const ans = bigger ? Math.max(...nums) : Math.min(...nums);
+    const arr = shuffle(nums).map(String);
+    return { key:`cmp-${nums.sort().join('-')}-${bigger}`, question:`Which number is the ${bigger ? 'BIGGEST' : 'SMALLEST'}?`,
+      big:true, choices: arr, correctIndex: arr.indexOf(String(ans)) };
+  },
+  word() {
+    const word = pick(Object.keys(WORD_PICS));
+    const wrong = new Set();
+    while (wrong.size < 3) { const w = misspell(word); if (w !== word) wrong.add(w); }
+    return { key:`wrd-${word}`, question:'Which word matches the picture?',
+      display: WORD_PICS[word], ...listChoices(word, [...wrong]) };
+  },
+  pattern() {
+    const shape = pick(['AB', 'AAB', 'ABB', 'ABC', 'AABB']);
+    const letters = [...new Set(shape.split(''))];
+    const emo = shuffle(PATTERN_EMOJIS).slice(0, letters.length);
+    const map = Object.fromEntries(letters.map((l, i) => [l, emo[i]]));
+    const len = shape.length * 2 + rnd(0, shape.length - 1);
+    const seq = Array.from({ length: len }, (_, i) => map[shape[i % shape.length]]);
+    const ans = map[shape[len % shape.length]];
+    const others = [...emo, ...shuffle(PATTERN_EMOJIS.filter(e => !emo.includes(e)))];
+    return { key:`pat-${shape}-${emo.join('')}-${len}`, question:'What comes next?',
+      display: seq.join('') + '❓', big:true, ...listChoices(ans, others) };
+  },
+  oddOneOut() {
+    const [main, odd] = shuffle(Object.keys(ODD_GROUPS));
+    const items = [...shuffle(ODD_GROUPS[main]).slice(0, 3), pick(ODD_GROUPS[odd])];
+    const arr = shuffle(items);
+    return { key:`odd-${[...items].sort().join('')}`, question:'Which one does NOT belong?',
+      big:true, choices: arr, correctIndex: arr.indexOf(items[3]) };
+  },
+  colorMix() {
+    const m = pick(COLOR_MIX);
+    const names = shuffle([m.ans, ...shuffle(Object.keys(COLOR_HEX).filter(c => c !== m.ans)).slice(0, 3)]);
+    return { key:`mix-${m.ans}`, question:`${m.a} + ${m.b} makes...?`,
+      choices: names.map(n => ({ label:n, color:COLOR_HEX[n] })), correctIndex: names.indexOf(m.ans) };
+  },
+};
 
 // ===== SPEED SETTING (0–10) =====
 const SPEED_COLORS = [
@@ -288,22 +364,33 @@ function startGame(vehicleKey) {
   showPuzzle(0);
 }
 
+const SEEN_KEY = 'livy2-seen-puzzles';
+
+function loadSeen() {
+  try { return JSON.parse(localStorage.getItem(SEEN_KEY)) || []; } catch (e) { return []; }
+}
+function saveSeen(list) {
+  try { localStorage.setItem(SEEN_KEY, JSON.stringify(list.slice(-80))); } catch (e) {}
+}
+
 function selectPuzzles() {
-  const byType = {};
-  PUZZLE_POOL.forEach(p => { (byType[p.type] = byType[p.type]||[]).push(p); });
-  const types = shuffle(Object.keys(byType));
-  const picked = [], used = new Set();
-  for (const type of types) {
-    if (picked.length >= 3) break;
-    const pool = byType[type].filter(p=>!used.has(p.id));
-    if (pool.length) { const p=pick(pool); picked.push(p); used.add(p.id); }
-  }
-  while (picked.length<3) {
-    const rem = PUZZLE_POOL.filter(p=>!used.has(p.id));
-    if (!rem.length) break;
-    const p=pick(rem); picked.push(p); used.add(p.id);
-  }
-  return shuffle(picked);
+  const seen = loadSeen();
+  const families = shuffle([
+    ['add', 'subtract', 'missing'], ['skipCount', 'beforeAfter', 'compare'],
+    ['count'], ['word'], ['pattern'], ['oddOneOut'], ['colorMix'],
+  ]);
+  const types = families.slice(0, 3).map(f => pick(f));
+  const picked = types.map(t => {
+    let p;
+    for (let tries = 0; tries < 25; tries++) {
+      p = GENERATORS[t]();
+      if (!seen.includes(p.key)) break;
+    }
+    seen.push(p.key);
+    return p;
+  });
+  saveSeen(seen);
+  return picked;
 }
 
 function showPuzzle(idx) {
@@ -313,52 +400,27 @@ function showPuzzle(idx) {
   el('puzzle-number').textContent = `Puzzle ${idx+1} of 3 — Earn the ${v.partNames[idx]}!`;
   el('puzzle-question').textContent = puzzle.question;
   el('puzzle-feedback').className = 'feedback hidden';
-  el('puzzle-display').innerHTML = '';
+  el('puzzle-display').textContent = puzzle.display || '';
+  el('puzzle-display').style.fontSize = [...(puzzle.display || '')].length > 10 ? '1.3em' : '';
+  el('puzzle-display').style.letterSpacing = [...(puzzle.display || '')].length > 10 ? '1px' : '';
   el('puzzle-choices').innerHTML = '';
-  if (puzzle.type==='color')   renderColor(puzzle);
-  if (puzzle.type==='count')   renderCount(puzzle);
-  if (puzzle.type==='shape')   renderShape(puzzle);
-  if (puzzle.type==='math')    renderMath(puzzle);
-  if (puzzle.type==='pattern') renderPattern(puzzle);
-  if (puzzle.type==='compare') renderCompare(puzzle);
-  if (puzzle.type==='word')    renderWord(puzzle);
+
+  puzzle.choices.forEach((c, i) => {
+    const b = btn();
+    b.className = 'choice-btn';
+    if (typeof c === 'object') {
+      b.classList.add('color-choice');
+      b.style.background = c.color;
+      b.textContent = c.label;
+    } else {
+      b.textContent = c;
+      if (puzzle.big) b.style.fontSize = '1.9em';
+    }
+    b.addEventListener('click', () => answer(i === puzzle.correctIndex, b));
+    el('puzzle-choices').appendChild(b);
+  });
 }
 
-function renderColor(p) {
-  shuffle(p.choices).forEach(c => {
-    const b = btn(); b.className='choice-btn color-choice';
-    b.style.background=c.color; b.style.border='3px solid rgba(255,255,255,0.4)';
-    b.textContent=c.label; b.style.fontWeight='bold'; b.style.fontSize='0.95em';
-    b.addEventListener('click',()=>answer(c.correct,b));
-    el('puzzle-choices').appendChild(b);
-  });
-}
-function renderCount(p) {
-  el('puzzle-display').textContent = p.items.join(' ');
-  p.choices.forEach((v,i)=>{ const b=btn(); b.className='choice-btn'; b.textContent=v; b.addEventListener('click',()=>answer(i===p.correctIndex,b)); el('puzzle-choices').appendChild(b); });
-}
-function renderShape(p) {
-  p.shapes.forEach((shape,i)=>{
-    const b=btn(); b.className='choice-btn';
-    if(shape==='star'){ const s=document.createElement('span'); s.className='shape-star'; s.textContent='⭐'; b.appendChild(s); }
-    else { const w=document.createElement('div'); w.className='shape-wrap'; const d=document.createElement('div'); d.className=`shape-${shape}`; w.appendChild(d); b.appendChild(w); }
-    b.addEventListener('click',()=>answer(i===p.correctIndex,b));
-    el('puzzle-choices').appendChild(b);
-  });
-}
-function renderMath(p) {
-  p.choices.forEach((v,i)=>{ const b=btn(); b.className='choice-btn'; b.textContent=v; b.addEventListener('click',()=>answer(i===p.correctIndex,b)); el('puzzle-choices').appendChild(b); });
-}
-function renderPattern(p) {
-  p.choices.forEach((v,i)=>{ const b=btn(); b.className='choice-btn'; b.textContent=v; b.addEventListener('click',()=>answer(i===p.correctIndex,b)); el('puzzle-choices').appendChild(b); });
-}
-function renderCompare(p) {
-  el('puzzle-choices').style.gridTemplateColumns='1fr 1fr';
-  p.choices.forEach((v,i)=>{ const b=btn(); b.className='choice-btn'; b.textContent=v; b.style.fontSize='2em'; b.addEventListener('click',()=>answer(i===p.correctIndex,b)); el('puzzle-choices').appendChild(b); });
-}
-function renderWord(p) {
-  p.choices.forEach((v,i)=>{ const b=btn(); b.className='choice-btn'; b.textContent=v; b.style.fontSize='1.1em'; b.style.letterSpacing='2px'; b.addEventListener('click',()=>answer(i===p.correctIndex,b)); el('puzzle-choices').appendChild(b); });
-}
 function btn() { return document.createElement('button'); }
 
 function answer(correct, btnEl) {
